@@ -34,7 +34,7 @@ class ProductItem extends StatelessWidget {
               //   ),
               // );
               Navigator.of(context)
-                  .pushNamed(ProductDetailScreen.routeName, arguments: product);
+                  .pushNamed(ProductDetailScreen.routeName, arguments: product.id);
             },
           ),
           footer: GridTileBar(
