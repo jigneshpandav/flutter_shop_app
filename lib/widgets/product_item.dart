@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
+
 import '../providers/product.dart';
 
 class ProductItem extends StatelessWidget {
-  final Product product;
-
-  const ProductItem({Key? key, required this.product}) : super(key: key);
+  const ProductItem({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Product product = Provider.of<Product>(context, listen: false);
     return Container(
       decoration: const BoxDecoration(boxShadow: [
         BoxShadow(
@@ -33,8 +34,10 @@ class ProductItem extends StatelessWidget {
               //     ),
               //   ),
               // );
-              Navigator.of(context)
-                  .pushNamed(ProductDetailScreen.routeName, arguments: product.id);
+              Navigator.of(context).pushNamed(
+                ProductDetailScreen.routeName,
+                arguments: product.id,
+              );
             },
           ),
           footer: GridTileBar(
@@ -43,13 +46,19 @@ class ProductItem extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             backgroundColor: Colors.black87,
-            leading: IconButton(
-              icon: Icon(Icons.favorite_outline),
-              onPressed: () {},
-              color: Theme.of(context).colorScheme.secondary,
+            leading: Consumer<Product>(
+              builder: (ctx, product, child) => IconButton(
+                icon: product.isFavorite
+                    ? const Icon(Icons.favorite)
+                    : const Icon(Icons.favorite_outline),
+                onPressed: () {
+                  product.toggleFavoriteStatus();
+                },
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
             trailing: IconButton(
-              icon: Icon(Icons.shopping_cart),
+              icon: const Icon(Icons.shopping_cart),
               onPressed: () {},
               color: Theme.of(context).colorScheme.secondary,
             ),

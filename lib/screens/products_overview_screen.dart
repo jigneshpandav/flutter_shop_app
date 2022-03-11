@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../providers/product.dart';
+
 import '../widgets/products_grid.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {
@@ -9,9 +9,28 @@ class ProductsOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Products")),
-      body: ProductsGrid(),
+    DateTime pre_backpress = DateTime.now();
+    return WillPopScope(
+      onWillPop: () async {
+        final timegap = DateTime.now().difference(pre_backpress);
+        final cantExit = timegap >= Duration(seconds: 2);
+        pre_backpress = DateTime.now();
+        if (cantExit) {
+          //show snackbar
+          final snack = SnackBar(
+            content: Text('Press Back button again to Exit'),
+            duration: Duration(seconds: 2),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snack);
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Products")),
+        body: ProductsGrid(),
+      ),
     );
   }
 }
