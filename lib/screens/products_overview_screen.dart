@@ -68,7 +68,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ),
             Consumer<Cart>(
               builder: (_, cart, ch) => Badge(
-                value: '${cart.itemCount != null ? 0 : 0}',
+                value: '${cart.itemCount}',
                 child: IconButton(
                   icon: Icon(Icons.shopping_cart),
                   onPressed: () {
