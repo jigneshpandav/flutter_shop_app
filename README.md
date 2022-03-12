@@ -1,4 +1,4 @@
-# flutter_shop_app
+# Shop app for Provider State Management Demo
 
 Simple flutter shop app for State Management
 
