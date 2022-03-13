@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/screens/cart_screen.dart';
-import 'package:flutter_shop_app/screens/orders_screen.dart';
-import 'package:flutter_shop_app/widgets/app_drawer.dart';
-import 'package:flutter_shop_app/widgets/badge.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
+import '../screens/cart_screen.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/badge.dart';
 import '../widgets/products_grid.dart';
 
-enum FilterOptions { Favorites, All }
+enum FilterOptions {
+  favorites,
+  all,
+}
 
 class ProductsOverviewScreen extends StatefulWidget {
   static const routeName = "/";
 
-  ProductsOverviewScreen({Key? key}) : super(key: key);
+  const ProductsOverviewScreen({Key? key}) : super(key: key);
 
   @override
   State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
@@ -24,14 +26,13 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime pre_backpress = DateTime.now();
+    DateTime preBackpress = DateTime.now();
     return WillPopScope(
       onWillPop: () async {
-        final timegap = DateTime.now().difference(pre_backpress);
+        final timegap = DateTime.now().difference(preBackpress);
         final cantExit = timegap >= const Duration(seconds: 2);
-        pre_backpress = DateTime.now();
+        preBackpress = DateTime.now();
         if (cantExit) {
-          //show snackbar
           const snack = SnackBar(
             content: Text('Press Back button again to Exit'),
             duration: Duration(seconds: 2),
@@ -48,9 +49,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           actions: [
             PopupMenuButton(
               onSelected: (FilterOptions selectedValue) {
-                print("Selected value from popup menu is $selectedValue");
                 setState(() {
-                  if (selectedValue == FilterOptions.Favorites) {
+                  if (selectedValue == FilterOptions.favorites) {
                     _showFavoriteOnly = true;
                   } else {
                     _showFavoriteOnly = false;
@@ -60,11 +60,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               itemBuilder: (_) => [
                 const PopupMenuItem(
                   child: Text("Only favorites"),
-                  value: FilterOptions.Favorites,
+                  value: FilterOptions.favorites,
                 ),
                 const PopupMenuItem(
                   child: Text("Show all"),
-                  value: FilterOptions.All,
+                  value: FilterOptions.all,
                 )
               ],
               icon: const Icon(Icons.more_vert),
@@ -73,7 +73,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               builder: (_, cart, ch) => Badge(
                 value: '${cart.itemCount}',
                 child: IconButton(
-                  icon: Icon(Icons.shopping_cart),
+                  icon: const Icon(Icons.shopping_cart),
                   onPressed: () {
                     Navigator.of(context).pushNamed(CartScreen.routeName);
                   },
@@ -82,7 +82,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ),
           ],
         ),
-        drawer: AppDrawer(),
+        drawer: const AppDrawer(),
         body: ProductsGrid(showFavoriteOnly: _showFavoriteOnly),
       ),
     );

@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import '../providers/orders.dart' as ord;
-import 'package:intl/intl.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../providers/orders.dart' as ord;
 
 class OrderItem extends StatefulWidget {
   final ord.OrderItem order;
@@ -18,7 +20,7 @@ class _OrderItemState extends State<OrderItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Column(
         children: [
           ListTile(
@@ -36,7 +38,7 @@ class _OrderItemState extends State<OrderItem> {
           ),
           if (_expanded)
             Container(
-              margin: EdgeInsets.all(15),
+              margin: const EdgeInsets.all(15),
               height: min(widget.order.products.length * 20 + 10, 100),
               child: ListView.builder(
                   itemBuilder: (ctx, index) {
@@ -46,14 +48,15 @@ class _OrderItemState extends State<OrderItem> {
                       children: [
                         Text(
                           prod.title,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           '${prod.quantity} x \$${prod.price}',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                          style:
+                              const TextStyle(fontSize: 18, color: Colors.grey),
                         )
                       ],
                     );

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,13 +30,13 @@ class CartItem extends StatelessWidget {
           horizontal: 15,
           vertical: 5,
         ),
-        child: Icon(
+        child: const Icon(
           Icons.delete,
           color: Colors.white,
           size: 40,
         ),
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
+        padding: const EdgeInsets.only(right: 20),
       ),
       onDismissed: (direction) {
         Provider.of<Cart>(context, listen: false).removeId(productId);

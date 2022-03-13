@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/providers/cart.dart';
-import 'package:flutter_shop_app/providers/orders.dart';
-import 'package:flutter_shop_app/screens/cart_screen.dart';
-import 'package:flutter_shop_app/screens/orders_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/cart.dart';
+import 'providers/orders.dart';
 import 'providers/products.dart';
+import 'screens/cart_screen.dart';
+import 'screens/orders_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'screens/products_overview_screen.dart';
 
@@ -43,7 +43,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: ProductsOverviewScreen.routeName,
         routes: {
-          ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
+          ProductsOverviewScreen.routeName: (ctx) =>
+              const ProductsOverviewScreen(),
           ProductDetailScreen.routeName: (ctx) => const ProductDetailScreen(),
           CartScreen.routeName: (ctx) => const CartScreen(),
           OrdersScreen.routeName: (ctx) => const OrdersScreen(),

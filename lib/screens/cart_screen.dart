@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/providers/cart.dart' show Cart;
 import 'package:provider/provider.dart';
+
+import '../providers/cart.dart' show Cart;
 import '../providers/orders.dart';
 import '../widgets/cart_item.dart';
 
@@ -33,7 +34,7 @@ class CartScreen extends StatelessWidget {
                   Chip(
                     label: Text(
                       '\$${cart.totalAmount.toStringAsFixed(2)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
@@ -47,7 +48,7 @@ class CartScreen extends StatelessWidget {
                       );
                       cart.clear();
                     },
-                    child: Text("ORDER NOW"),
+                    child: const Text("ORDER NOW"),
                   ),
                 ],
               ),
