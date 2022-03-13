@@ -39,7 +39,7 @@ class CartItem extends StatelessWidget {
         padding: const EdgeInsets.only(right: 20),
       ),
       onDismissed: (direction) {
-        Provider.of<Cart>(context, listen: false).removeId(productId);
+        Provider.of<Cart>(context, listen: false).removeItem(productId);
       },
       child: Card(
         margin: const EdgeInsets.symmetric(
