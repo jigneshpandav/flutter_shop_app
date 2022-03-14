@@ -50,8 +50,18 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == productId);
   }
 
-  void addProduct(Product product) {
-    _items.add(product);
+  void saveProduct(Product product) {
+    var productIndex = _items.indexWhere((element) => element.id == product.id);
+    if (productIndex <= -1) {
+      _items.add(product);
+    } else {
+      _items[productIndex] = product;
+    }
+    notifyListeners();
+  }
+
+  void removeProduct(String productId) {
+    _items.removeWhere((element) => element.id == productId);
     notifyListeners();
   }
 }
