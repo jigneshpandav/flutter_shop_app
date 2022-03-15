@@ -27,6 +27,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
     description: "",
     price: 0.0,
     imageUrl: "",
+    isFavorite: false,
   );
 
   @override
@@ -107,6 +108,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                     description: _editedProduct.description,
                     price: _editedProduct.price,
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -135,6 +137,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                     description: value as String,
                     price: _editedProduct.price,
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -163,6 +166,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                     description: _editedProduct.description,
                     price: double.parse(value as String),
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -189,6 +193,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                     description: _editedProduct.description,
                     price: _editedProduct.price,
                     imageUrl: value as String,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
                 onFieldSubmitted: (_) => _saveForm,
