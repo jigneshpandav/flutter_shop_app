@@ -1,4 +1,6 @@
-# Shop app (Provider State Management/Forms)
+# Shop App 
+
+Includes Provider State Management, User Inputs(Forms)
 
 Simple flutter shop app for State Management
 
