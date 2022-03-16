@@ -22,7 +22,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
   bool _isInit = true;
 
   Product _editedProduct = Product(
-    id: DateTime.now().toString(),
+    id: "",
     title: "",
     description: "",
     price: 0.0,
@@ -42,6 +42,14 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
       var arguments = ModalRoute.of(context)!.settings.arguments;
       if (arguments != null) {
         _editedProduct = arguments as Product;
+        _editedProduct = Product(
+          id: _editedProduct.id,
+          title: _editedProduct.title,
+          description: _editedProduct.description,
+          price: _editedProduct.price,
+          imageUrl: _editedProduct.imageUrl,
+          isFavorite: _editedProduct.isFavorite,
+        );
         _imageUrlController.text = _editedProduct.imageUrl;
       }
     }
@@ -63,7 +71,12 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
       return;
     }
     _form.currentState!.save();
-    Provider.of<Products>(context, listen: false).saveProduct(_editedProduct);
+    if (_editedProduct.id.isEmpty) {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+    }
     Navigator.of(context).pop();
   }
 

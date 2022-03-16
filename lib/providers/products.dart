@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'product.dart';
+
+import 'dart:convert';
 
 class Products with ChangeNotifier {
   final List<Product> _items = [
@@ -39,6 +44,13 @@ class Products with ChangeNotifier {
   ];
 
   List<Product> get items {
+    final url = Uri.parse(
+        'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+    http.get(url).then((value) {
+      // print(json.decode(value.body));
+      //notifyListeners();
+    }).onError((error, stackTrace) {});
+
     return [..._items];
   }
 
@@ -50,14 +62,42 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == productId);
   }
 
-  void saveProduct(Product product) {
+  void addProduct(Product product) {
     var productIndex = _items.indexWhere((element) => element.id == product.id);
     if (productIndex <= -1) {
-      _items.add(product);
-    } else {
-      _items[productIndex] = product;
+      final url = Uri.parse(
+          'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+      http
+          .post(url,
+              body: json.encode({
+                'title': product.title,
+                'description': product.description,
+                'imageUrl': product.imageUrl,
+                'price': product.price,
+                'isFavorite': product.isFavorite,
+              }))
+          .then((response) {
+        _items.add(Product(
+            id: json.decode(response.body)['name'],
+            title: product.title,
+            description: product.description,
+            imageUrl: product.imageUrl,
+            price: product.price,
+            isFavorite: product.isFavorite));
+        notifyListeners();
+      }).onError((error, stackTrace) {
+        print('Error');
+        print(error);
+      });
     }
-    notifyListeners();
+  }
+
+  void updateProduct(String productId, Product product) {
+    var productIndex = _items.indexWhere((element) => element.id == product.id);
+    if (productIndex >= -1) {
+      _items[productIndex] = product;
+      notifyListeners();
+    }
   }
 
   void removeProduct(String productId) {
