@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/screens/manage_product_screen.dart';
-import 'package:flutter_shop_app/screens/user_products_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/cart.dart';
 import 'providers/orders.dart';
 import 'providers/products.dart';
 import 'screens/cart_screen.dart';
+import 'screens/manage_product_screen.dart';
 import 'screens/orders_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'screens/products_overview_screen.dart';
+import 'screens/user_products_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           fontFamily: "Lato",
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: UserProductsScreen.routeName,
+        initialRoute: ProductsOverviewScreen.routeName,
         routes: {
           ProductsOverviewScreen.routeName: (ctx) =>
               const ProductsOverviewScreen(),

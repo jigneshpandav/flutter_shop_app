@@ -116,13 +116,33 @@ class Products with ChangeNotifier {
   Future<void> updateProduct(String productId, Product product) async {
     var productIndex = _items.indexWhere((element) => element.id == product.id);
     if (productIndex >= -1) {
-      _items[productIndex] = product;
-      notifyListeners();
+      final url = Uri.parse(
+          'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$productId.json');
+      try {
+        await http.patch(url,
+            body: json.encode({
+              'title': product.title,
+              'description': product.description,
+              'imageUrl': product.imageUrl,
+              'price': product.price
+            }));
+        _items[productIndex] = product;
+        notifyListeners();
+      } catch (error) {
+        rethrow;
+      }
     }
   }
 
-  void removeProduct(String productId) {
-    _items.removeWhere((element) => element.id == productId);
-    notifyListeners();
+  Future<void> removeProduct(String productId) async {
+    try {
+      final url = Uri.parse(
+          'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$productId.json');
+      await http.delete(url);
+      _items.removeWhere((element) => element.id == productId);
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 }

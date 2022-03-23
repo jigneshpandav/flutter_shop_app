@@ -40,7 +40,7 @@ class UserProductsScreen extends StatelessWidget {
               return ChangeNotifierProvider.value(
                 value: productData.items[index],
                 child: Column(
-                  children: const [
+                  children: [
                     UserProductItem(),
                     Divider(),
                   ],

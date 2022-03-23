@@ -42,17 +42,21 @@ class UserProductItem extends StatelessWidget {
                       return AlertDialog(
                         actions: [
                           TextButton(
-                            onPressed: () {
-                              Provider.of<Products>(context, listen: false)
-                                  .removeProduct(product.id);
-                              Navigator.of(context).pop();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "Product removed successfully.",
+                            onPressed: () async {
+                              try {
+                                await Provider.of<Products>(
+                                  context,
+                                  listen: false,
+                                ).removeProduct(product.id);
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Product removed successfully.",
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              } catch (error) {}
                             },
                             child: const Text("Yes"),
                           ),
