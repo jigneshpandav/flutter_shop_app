@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           fontFamily: "Lato",
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: ProductsOverviewScreen.routeName,
+        initialRoute: UserProductsScreen.routeName,
         routes: {
           ProductsOverviewScreen.routeName: (ctx) =>
               const ProductsOverviewScreen(),
