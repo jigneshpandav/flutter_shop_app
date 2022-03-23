@@ -135,14 +135,19 @@ class Products with ChangeNotifier {
   }
 
   Future<void> removeProduct(String productId) async {
-    try {
-      final url = Uri.parse(
-          'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$productId.json');
-      await http.delete(url);
-      _items.removeWhere((element) => element.id == productId);
+    final url = Uri.parse(
+        'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$productId.json');
+    final existingProductIndex =
+        _items.indexWhere((product) => product.id == productId);
+    Product existingProduct = _items[existingProductIndex];
+
+    final response = await http.delete(url);
+    _items.removeAt(existingProductIndex);
+    notifyListeners();
+
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
       notifyListeners();
-    } catch (error) {
-      rethrow;
     }
   }
 }

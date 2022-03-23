@@ -48,7 +48,7 @@ class UserProductItem extends StatelessWidget {
                                   context,
                                   listen: false,
                                 ).removeProduct(product.id);
-                                Navigator.of(context).pop();
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
@@ -56,7 +56,16 @@ class UserProductItem extends StatelessWidget {
                                     ),
                                   ),
                                 );
-                              } catch (error) {}
+                              } catch (error) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "There is some error while removing product!",
+                                    ),
+                                  ),
+                                );
+                              }
+                              Navigator.of(context).pop();
                             },
                             child: const Text("Yes"),
                           ),
