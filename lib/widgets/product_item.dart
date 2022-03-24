@@ -54,8 +54,27 @@ class ProductItem extends StatelessWidget {
                 icon: product.isFavorite
                     ? const Icon(Icons.favorite)
                     : const Icon(Icons.favorite_outline),
-                onPressed: () {
-                  product.toggleFavoriteStatus();
+                onPressed: () async {
+                  try {
+                    await product.toggleFavoriteStatus();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          product.isFavorite
+                              ? "Product added into favorite."
+                              : "Product removed from favorite.",
+                        ),
+                      ),
+                    );
+                  } catch (error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Error occurred while adding product into favorite.",
+                        ),
+                      ),
+                    );
+                  }
                 },
                 color: Theme.of(context).colorScheme.secondary,
               ),

@@ -60,7 +60,7 @@ class UserProductItem extends StatelessWidget {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                      "There is some error while removing product!",
+                                      "There is some error occurred while removing product!",
                                     ),
                                   ),
                                 );
