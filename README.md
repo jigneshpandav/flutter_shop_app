@@ -12,3 +12,5 @@ Regular Expressions: https://www.youtube.com/playlist?list=PL55RiY5tL51ryV3MhCbH
 this series is about regular expressions in JavaScript but Dart follows the exact same specification
 
 Official Input & Forms Docs: https://docs.flutter.dev/cookbook#forms
+
+Sending Http Requests: https://flutter.dev/docs/cookbook/networking/fetch-data
