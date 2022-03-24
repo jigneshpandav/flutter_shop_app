@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/providers/cart.dart';
+
+import 'package:http/http.dart' as http;
 
 class OrderItem {
   final String id;
@@ -22,16 +26,41 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  void addOrder(List<CartItem> cartProducts, double total) {
-    _orders.insert(
-      0,
-      OrderItem(
-        id: DateTime.now().toString(),
-        amount: total,
-        products: cartProducts,
-        dateTime: DateTime.now(),
-      ),
-    );
-    notifyListeners();
+  Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+    try {
+      final url = Uri.parse(
+          'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json');
+      final timestamp = DateTime.now();
+      final response = await http.post(url,
+          body: json.encode({
+            'amount': total,
+            'dateTime': timestamp.toIso8601String(),
+            'products': cartProducts
+                .map((e) => {
+                      'id': e.id,
+                      'title': e.title,
+                      'quantity': e.quantity,
+                      'price': e.price,
+                    })
+                .toList()
+          }));
+
+      if (response.statusCode >= 400) {
+        throw Exception("Server error");
+      }
+
+      _orders.insert(
+        0,
+        OrderItem(
+          id: json.decode(response.body)['name'],
+          amount: total,
+          products: cartProducts,
+          dateTime: DateTime.now(),
+        ),
+      );
+      notifyListeners();
+    } catch (error) {
+      throw Exception(error);
+    }
   }
 }

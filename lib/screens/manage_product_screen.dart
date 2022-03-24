@@ -141,7 +141,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
               padding: const EdgeInsets.all(10.0),
               child: Form(
                 key: _form,
-                autovalidateMode: AutovalidateMode.always,
+                autovalidateMode: AutovalidateMode.disabled,
                 child: ListView(
                   children: [
                     TextFormField(
