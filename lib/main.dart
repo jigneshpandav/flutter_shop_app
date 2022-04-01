@@ -17,7 +17,6 @@ import 'screens/user_products_screen.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
-  print(dotenv.env);
   const String environment = String.fromEnvironment(
     'ENVIRONMENT',
     defaultValue: Environment.DEV,
