@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_shop_app/configs/environment.dart';
 import 'package:http/http.dart' as http;
 
@@ -63,13 +62,15 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchProducts() async {
-    var url = Uri.parse('${Environment().config.baseUrl}products.json?auth=$authToken');
+    var url = Uri.parse(
+        '${Environment().config.baseUrl}products.json?auth=$authToken');
     try {
       final response = await http.get(url);
       final data = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
 
-      url = Uri.parse('${Environment().config.baseUrl}userFavorites/$userId.json?auth=$authToken');
+      url = Uri.parse(
+          '${Environment().config.baseUrl}userFavorites/$userId.json?auth=$authToken');
       final favResponse = await http.get(url);
       final favData = json.decode(favResponse.body);
 
@@ -93,10 +94,12 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    var productIndex = _products.indexWhere((element) => element.id == product.id);
+    var productIndex =
+        _products.indexWhere((element) => element.id == product.id);
     if (productIndex <= -1) {
       try {
-        final url = Uri.parse('${Environment().config.baseUrl}products.json?auth=$authToken');
+        final url = Uri.parse(
+            '${Environment().config.baseUrl}products.json?auth=$authToken');
         final response = await http.post(url,
             body: json.encode({
               'title': product.title,
@@ -120,10 +123,11 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(String productId, Product product) async {
-    var productIndex = _products.indexWhere((element) => element.id == product.id);
+    var productIndex =
+        _products.indexWhere((element) => element.id == product.id);
     if (productIndex >= -1) {
-      final url =
-          Uri.parse('${Environment().config.baseUrl}products/$productId.json?auth=$authToken');
+      final url = Uri.parse(
+          '${Environment().config.baseUrl}products/$productId.json?auth=$authToken');
       try {
         await http.patch(url,
             body: json.encode({
@@ -141,8 +145,10 @@ class Products with ChangeNotifier {
   }
 
   Future<void> removeProduct(String productId) async {
-    final url = Uri.parse('${Environment().config.baseUrl}products/$productId.json');
-    final existingProductIndex = _products.indexWhere((product) => product.id == productId);
+    final url =
+        Uri.parse('${Environment().config.baseUrl}products/$productId.json');
+    final existingProductIndex =
+        _products.indexWhere((product) => product.id == productId);
     Product existingProduct = _products[existingProductIndex];
 
     final response = await http.delete(url);

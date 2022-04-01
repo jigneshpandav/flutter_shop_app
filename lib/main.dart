@@ -21,6 +21,7 @@ void main() async {
     'ENVIRONMENT',
     defaultValue: Environment.DEV,
   );
+  print(dotenv.env);
   Environment().initConfig(environment);
   runApp(const MyApp());
 }
