@@ -6,11 +6,12 @@ import 'package:provider/provider.dart';
 import '../providers/product.dart';
 
 class UserProductItem extends StatelessWidget {
-  const UserProductItem({Key? key}) : super(key: key);
+  final Product product;
+  const UserProductItem({Key? key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Product product = Provider.of<Product>(context, listen: false);
+    // Product product = Provider.of<Product>(context, listen: false);
     return ListTile(
       style: ListTileStyle.list,
       leading: CircleAvatar(

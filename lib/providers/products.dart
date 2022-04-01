@@ -61,16 +61,20 @@ class Products with ChangeNotifier {
     return _products.firstWhere((product) => product.id == productId);
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts([bool filterByUser = false]) async {
+    final String filter =
+        filterByUser ? '&orderBy="userId"&equalTo="$userId"' : '';
+
     var url = Uri.parse(
-        '${Environment().config.baseUrl}products.json?auth=$authToken');
+        '${Environment().config.baseUrl}products.json?auth=$authToken$filter');
     try {
       final response = await http.get(url);
       final data = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
 
       url = Uri.parse(
-          '${Environment().config.baseUrl}userFavorites/$userId.json?auth=$authToken');
+        '${Environment().config.baseUrl}userFavorites/$userId.json?auth=$authToken',
+      );
       final favResponse = await http.get(url);
       final favData = json.decode(favResponse.body);
 
@@ -82,6 +86,7 @@ class Products with ChangeNotifier {
             description: prodData['description'],
             price: prodData['price'],
             imageUrl: prodData['imageUrl'],
+            userId: prodData['userId'],
             isFavorite: favData == null ? false : favData[prodId] ?? false,
           ),
         );
@@ -105,6 +110,7 @@ class Products with ChangeNotifier {
               'title': product.title,
               'description': product.description,
               'imageUrl': product.imageUrl,
+              'userId': userId,
               'price': product.price,
             }));
 
@@ -114,6 +120,7 @@ class Products with ChangeNotifier {
           description: product.description,
           imageUrl: product.imageUrl,
           price: product.price,
+          userId: userId!,
         ));
         notifyListeners();
       } catch (error) {

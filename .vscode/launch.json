@@ -8,12 +8,6 @@
             "name": "flutter_shop_app",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "flutter_shop_app (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
         }
     ]
 }

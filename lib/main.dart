@@ -66,8 +66,8 @@ class MyApp extends StatelessWidget {
           ),
           debugShowCheckedModeBanner: false,
           home: authData.isAuthenticated
-              ? ProductsOverviewScreen()
-              : AuthScreen(),
+              ? const ProductsOverviewScreen()
+              : const AuthScreen(),
           routes: {
             AuthScreen.routeName: (ctx) => const AuthScreen(),
             // ProductsOverviewScreen.routeName: (ctx) => const ProductsOverviewScreen(),
