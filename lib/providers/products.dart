@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_shop_app/configs/environment.dart';
 import 'package:http/http.dart' as http;
 
 import 'product.dart';
 
-import 'dart:convert';
-
 class Products with ChangeNotifier {
-  // final List<Product> _items = [
+  // final List<Product> _products = [
   //   Product(
   //     id: 'p1',
   //     title: 'Red Shirt',
@@ -43,23 +43,26 @@ class Products with ChangeNotifier {
   //   ),
   // ];
 
-  List<Product> _items = [];
+  final String? authToken;
 
-  List<Product> get items {
-    return [..._items];
+  List<Product> _products = [];
+
+  Products(this.authToken, this._products);
+
+  List<Product> get products {
+    return [..._products];
   }
 
-  List<Product> get favoriteItems {
-    return items.where((product) => product.isFavorite == true).toList();
+  List<Product> get favoriteproducts {
+    return products.where((product) => product.isFavorite == true).toList();
   }
 
   Product findById(String productId) {
-    return _items.firstWhere((product) => product.id == productId);
+    return _products.firstWhere((product) => product.id == productId);
   }
 
   Future<void> fetchProducts() async {
-    final url = Uri.parse(
-        'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+    final url = Uri.parse('${Environment().config.baseUrl}products.json?auth=$authToken');
     try {
       final response = await http.get(url);
       final data = json.decode(response.body) as Map<String, dynamic>;
@@ -76,20 +79,18 @@ class Products with ChangeNotifier {
           ),
         );
       });
-      _items = loadedProducts;
+      _products = loadedProducts;
       notifyListeners();
     } catch (error) {
-      print(error);
       rethrow;
     }
   }
 
   Future<void> addProduct(Product product) async {
-    var productIndex = _items.indexWhere((element) => element.id == product.id);
+    var productIndex = _products.indexWhere((element) => element.id == product.id);
     if (productIndex <= -1) {
       try {
-        final url = Uri.parse(
-            'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+        final url = Uri.parse('${Environment().config.baseUrl}products.json?auth=$authToken');
         final response = await http.post(url,
             body: json.encode({
               'title': product.title,
@@ -99,7 +100,7 @@ class Products with ChangeNotifier {
               'isFavorite': product.isFavorite,
             }));
 
-        _items.add(Product(
+        _products.add(Product(
           id: json.decode(response.body)['name'],
           title: product.title,
           description: product.description,
@@ -115,10 +116,10 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(String productId, Product product) async {
-    var productIndex = _items.indexWhere((element) => element.id == product.id);
+    var productIndex = _products.indexWhere((element) => element.id == product.id);
     if (productIndex >= -1) {
-      final url = Uri.parse(
-          'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$productId.json');
+      final url =
+          Uri.parse('${Environment().config.baseUrl}products/$productId.json?auth=$authToken');
       try {
         await http.patch(url,
             body: json.encode({
@@ -127,7 +128,7 @@ class Products with ChangeNotifier {
               'imageUrl': product.imageUrl,
               'price': product.price
             }));
-        _items[productIndex] = product;
+        _products[productIndex] = product;
         notifyListeners();
       } catch (error) {
         rethrow;
@@ -136,18 +137,16 @@ class Products with ChangeNotifier {
   }
 
   Future<void> removeProduct(String productId) async {
-    final url = Uri.parse(
-        'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$productId.json');
-    final existingProductIndex =
-        _items.indexWhere((product) => product.id == productId);
-    Product existingProduct = _items[existingProductIndex];
+    final url = Uri.parse('${Environment().config.baseUrl}products/$productId.json');
+    final existingProductIndex = _products.indexWhere((product) => product.id == productId);
+    Product existingProduct = _products[existingProductIndex];
 
     final response = await http.delete(url);
-    _items.removeAt(existingProductIndex);
+    _products.removeAt(existingProductIndex);
     notifyListeners();
 
     if (response.statusCode >= 400) {
-      _items.insert(existingProductIndex, existingProduct);
+      _products.insert(existingProductIndex, existingProduct);
       notifyListeners();
     }
   }

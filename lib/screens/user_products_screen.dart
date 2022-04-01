@@ -38,7 +38,7 @@ class UserProductsScreen extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (ctx, index) {
               return ChangeNotifierProvider.value(
-                value: productData.items[index],
+                value: productData.products[index],
                 child: Column(
                   children: [
                     UserProductItem(),
@@ -47,7 +47,7 @@ class UserProductsScreen extends StatelessWidget {
                 ),
               );
             },
-            itemCount: productData.items.length,
+            itemCount: productData.products.length,
           ),
         ),
       ),
