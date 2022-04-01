@@ -19,7 +19,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   const String environment = String.fromEnvironment(
     'ENVIRONMENT',
-    defaultValue: Environment.DEV,
+    defaultValue: Environment.dev,
   );
   print(dotenv.env);
   Environment().initConfig(environment);
@@ -49,8 +49,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<Auth, Orders>(
           create: (ctx) => Orders(null, []),
-          update: (BuildContext context, auth, previousOrders) =>
-              Orders(auth.token, previousOrders == null ? [] : previousOrders.orders),
+          update: (BuildContext context, auth, previousOrders) => Orders(
+              auth.token, previousOrders == null ? [] : previousOrders.orders),
         ),
       ],
       child: Consumer<Auth>(
@@ -65,7 +65,9 @@ class MyApp extends StatelessWidget {
             fontFamily: "Lato",
           ),
           debugShowCheckedModeBanner: false,
-          home: authData.isAuthenticated ? ProductsOverviewScreen() : AuthScreen(),
+          home: authData.isAuthenticated
+              ? ProductsOverviewScreen()
+              : AuthScreen(),
           routes: {
             AuthScreen.routeName: (ctx) => const AuthScreen(),
             // ProductsOverviewScreen.routeName: (ctx) => const ProductsOverviewScreen(),
