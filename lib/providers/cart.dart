@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class CartItem {
   final String id;
@@ -15,19 +15,19 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  Map<String, CartItem> _items = {};
+  Map<String, CartItem> _products = {};
 
-  Map<String, CartItem> get items {
-    return {..._items};
+  Map<String, CartItem> get products {
+    return {..._products};
   }
 
   int get itemCount {
-    return _items.length;
+    return _products.length;
   }
 
   double get totalAmount {
     double total = 0.0;
-    _items.forEach((key, cartItem) {
+    _products.forEach((key, cartItem) {
       total += cartItem.price * cartItem.quantity;
     });
     return total;
@@ -38,9 +38,9 @@ class Cart with ChangeNotifier {
     double price,
     String title,
   ) {
-    if (_items.containsKey(productId)) {
+    if (_products.containsKey(productId)) {
       // change quantity...
-      _items.update(
+      _products.update(
         productId,
         (existingCartItem) => CartItem(
           id: existingCartItem.id,
@@ -50,7 +50,7 @@ class Cart with ChangeNotifier {
         ),
       );
     } else {
-      _items.putIfAbsent(
+      _products.putIfAbsent(
         productId,
         () => CartItem(
           id: DateTime.now().toString(),
@@ -64,16 +64,16 @@ class Cart with ChangeNotifier {
   }
 
   void removeItem(String productId) {
-    _items.remove(productId);
+    _products.remove(productId);
     notifyListeners();
   }
 
   void removeSingleItem(String productId) {
-    if (!_items.containsKey(productId)) {
+    if (!_products.containsKey(productId)) {
       return;
     } else {
-      if (_items[productId]!.quantity > 1) {
-        _items.update(
+      if (_products[productId]!.quantity > 1) {
+        _products.update(
           productId,
           (existingCartItem) => CartItem(
             id: existingCartItem.id,
@@ -83,14 +83,14 @@ class Cart with ChangeNotifier {
           ),
         );
       } else {
-        _items.remove(productId);
+        _products.remove(productId);
       }
     }
     notifyListeners();
   }
 
   void clear() {
-    _items = {};
+    _products = {};
     notifyListeners();
   }
 }

@@ -50,11 +50,11 @@ class CartScreen extends StatelessWidget {
             child: ListView.builder(
               itemBuilder: (ctx, index) {
                 return CartItem(
-                    id: cart.items.values.toList()[index].id,
-                    productId: cart.items.keys.toList()[index],
-                    title: cart.items.values.toList()[index].title,
-                    quantity: cart.items.values.toList()[index].quantity,
-                    price: cart.items.values.toList()[index].price);
+                    id: cart.products.values.toList()[index].id,
+                    productId: cart.products.keys.toList()[index],
+                    title: cart.products.values.toList()[index].title,
+                    quantity: cart.products.values.toList()[index].quantity,
+                    price: cart.products.values.toList()[index].price);
               },
               itemCount: cart.itemCount,
             ),
@@ -91,7 +91,7 @@ class _OrderButtonState extends State<OrderButton> {
               });
               try {
                 await Provider.of<Orders>(context, listen: false).addOrder(
-                  widget.cart.items.values.toList(),
+                  widget.cart.products.values.toList(),
                   widget.cart.totalAmount,
                 );
                 widget.cart.clear();

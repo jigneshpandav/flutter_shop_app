@@ -90,26 +90,32 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
   }
 
   void _saveForm() async {
+
     final is_Valid = _form.currentState!.validate();
     if (!is_Valid) {
       return;
     }
+
     _form.currentState!.save();
     setState(() {
       _isLoading = true;
     });
+
     if (_editedProduct.id.isEmpty) {
+
       try {
-        await Provider.of<Products>(context, listen: false)
-            .addProduct(_editedProduct);
+        await Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
       } catch (error) {
         await _showErrorMessage(context);
       }
     } else {
+
       try {
         await Provider.of<Products>(context, listen: false)
             .updateProduct(_editedProduct.id, _editedProduct);
+
       } catch (error) {
+
         await _showErrorMessage(context);
       }
     }
@@ -152,13 +158,10 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                       ),
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) {
-                        FocusScope.of(context)
-                            .requestFocus(_descriptionFocusNode);
+                        FocusScope.of(context).requestFocus(_descriptionFocusNode);
                       },
                       validator: (value) {
-                        return value!.isEmpty
-                            ? "Please enter product title"
-                            : null;
+                        return value!.isEmpty ? "Please enter product title" : null;
                       },
                       onSaved: (value) {
                         _editedProduct = Product(
@@ -185,9 +188,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                       focusNode: _descriptionFocusNode,
                       // textInputAction: TextInputAction.next,
                       validator: (value) {
-                        return value!.isEmpty
-                            ? "Please enter product description"
-                            : null;
+                        return value!.isEmpty ? "Please enter product description" : null;
                       },
                       onSaved: (value) {
                         _editedProduct = Product(
@@ -210,8 +211,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                       textInputAction: TextInputAction.next,
                       focusNode: _priceFocusNode,
                       onFieldSubmitted: (_) {
-                        FocusScope.of(context)
-                            .requestFocus(_descriptionFocusNode);
+                        FocusScope.of(context).requestFocus(_descriptionFocusNode);
                       },
                       validator: (value) {
                         return value!.isEmpty || double.tryParse(value)! <= 0.0
@@ -241,9 +241,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                       },
                       controller: _imageUrlController,
                       validator: (value) {
-                        return value!.isEmpty
-                            ? "Please enter product image url"
-                            : null;
+                        return value!.isEmpty ? "Please enter product image url" : null;
                       },
                       onSaved: (value) {
                         _editedProduct = Product(

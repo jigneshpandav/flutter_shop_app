@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../configs/environment.dart';
+
 class Product with ChangeNotifier {
   final String id;
   final String title;
@@ -26,16 +28,14 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String authToken) async {
     final oldStatus = isFavorite;
 
     _setFavoriteValue(!isFavorite);
 
-    final url = Uri.parse(
-        'https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json');
+    final url = Uri.parse('${Environment().config.baseUrl}products/$id.json?auth=$authToken');
     try {
-      final response =
-          await http.patch(url, body: json.encode({'isFavorite': isFavorite}));
+      final response = await http.patch(url, body: json.encode({'isFavorite': isFavorite}));
       if (response.statusCode >= 400) {
         _setFavoriteValue(oldStatus);
         throw Exception("Server error");

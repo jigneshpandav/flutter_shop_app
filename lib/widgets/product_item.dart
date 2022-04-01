@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop_app/providers/auth.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
@@ -12,7 +13,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context, listen: false);
     final Cart cart = Provider.of<Cart>(context, listen: false);
-
+    final String? authToken = Provider.of<Auth>(context, listen: false).token;
     return Container(
       decoration: const BoxDecoration(boxShadow: [
         BoxShadow(
@@ -56,7 +57,7 @@ class ProductItem extends StatelessWidget {
                     : const Icon(Icons.favorite_outline),
                 onPressed: () async {
                   try {
-                    await product.toggleFavoriteStatus();
+                    await product.toggleFavoriteStatus(authToken!);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
