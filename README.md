@@ -14,3 +14,7 @@ this series is about regular expressions in JavaScript but Dart follows the exac
 Official Input & Forms Docs: https://docs.flutter.dev/cookbook#forms
 
 Sending Http Requests: https://flutter.dev/docs/cookbook/networking/fetch-data
+
+Flutter dotenv: https://pub.dev/packages/flutter_dotenv
+
+Environment Configuration: https://stacksecrets.com/flutter/environment-configuration-in-flutter-app
