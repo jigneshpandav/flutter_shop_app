@@ -1,1 +1,13 @@
-import 'package:flutter_shop_app/configs/base_config.dart';class DevConfig implements BaseConfig {  @override  String get baseUrl => "https://shop-app-50e0f-default-rtdb.asia-southeast1.firebasedatabase.app/";  @override  String get firebaseAuthKey => "AIzaSyBVaF0tSVlQg3KrKjDhmsSwkFEGBqKIcic";  @override  String get firebaseBaseUrl => "https://identitytoolkit.googleapis.com/v1/accounts:";}
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_shop_app/configs/base_config.dart';
+
+class DevConfig implements BaseConfig {
+  @override
+  String get firebaseAuthKey => dotenv.env['firebaseAuthKey'] as String;
+
+  @override
+  String get baseUrl => dotenv.env['baseUrl'] as String;
+
+  @override
+  String get firebaseAuthBaseUrl => dotenv.env['firebaseAuthBaseUrl'] as String;
+}

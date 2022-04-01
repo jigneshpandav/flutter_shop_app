@@ -13,7 +13,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context, listen: false);
     final Cart cart = Provider.of<Cart>(context, listen: false);
-    final String? authToken = Provider.of<Auth>(context, listen: false).token;
+    final authData = Provider.of<Auth>(context, listen: false);
     return Container(
       decoration: const BoxDecoration(boxShadow: [
         BoxShadow(
@@ -57,7 +57,7 @@ class ProductItem extends StatelessWidget {
                     : const Icon(Icons.favorite_outline),
                 onPressed: () async {
                   try {
-                    await product.toggleFavoriteStatus(authToken!);
+                    await product.toggleFavoriteStatus(authData.token!, authData.userId);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(

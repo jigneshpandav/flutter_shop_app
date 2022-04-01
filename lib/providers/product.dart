@@ -28,14 +28,16 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavoriteStatus(String authToken) async {
+  Future<void> toggleFavoriteStatus(String authToken, String userId) async {
     final oldStatus = isFavorite;
 
     _setFavoriteValue(!isFavorite);
 
-    final url = Uri.parse('${Environment().config.baseUrl}products/$id.json?auth=$authToken');
+    final url = Uri.parse(
+      '${Environment().config.baseUrl}userFavorites/$userId/$id.json?auth=$authToken',
+    );
     try {
-      final response = await http.patch(url, body: json.encode({'isFavorite': isFavorite}));
+      final response = await http.put(url, body: json.encode(isFavorite));
       if (response.statusCode >= 400) {
         _setFavoriteValue(oldStatus);
         throw Exception("Server error");
