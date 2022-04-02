@@ -100,7 +100,7 @@ class _OrderButtonState extends State<OrderButton> {
                 });
               } catch (error) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text(
                       "Error while placing order!",
                     ),
@@ -113,12 +113,12 @@ class _OrderButtonState extends State<OrderButton> {
             },
       child: _isLoading
           ? Row(
-              children: [
+              children: const [
                 Text("Loading "),
                 CircularProgressIndicator(),
               ],
             )
-          : Text("ORDER NOW"),
+          : const Text("ORDER NOW"),
     );
   }
 }

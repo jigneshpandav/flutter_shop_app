@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/providers/product.dart';
-import 'package:flutter_shop_app/screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products.dart';
@@ -31,12 +30,6 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
     userId: "",
     isFavorite: false,
   );
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -138,7 +131,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
         ],
       ),
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : Padding(

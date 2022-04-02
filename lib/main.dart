@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_shop_app/providers/auth.dart';
 import 'package:flutter_shop_app/screens/auth_screen.dart';
+import 'package:flutter_shop_app/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'configs/environment.dart';
@@ -21,7 +22,6 @@ void main() async {
     'ENVIRONMENT',
     defaultValue: Environment.dev,
   );
-  print(dotenv.env);
   Environment().initConfig(environment);
   runApp(const MyApp());
 }
@@ -48,9 +48,11 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Cart(),
         ),
         ChangeNotifierProxyProvider<Auth, Orders>(
-          create: (ctx) => Orders(null, []),
+          create: (ctx) => Orders(null, null, []),
           update: (BuildContext context, auth, previousOrders) => Orders(
-              auth.token, previousOrders == null ? [] : previousOrders.orders),
+              auth.token,
+              auth.userId,
+              previousOrders == null ? [] : previousOrders.orders),
         ),
       ],
       child: Consumer<Auth>(
@@ -67,7 +69,16 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           home: authData.isAuthenticated
               ? const ProductsOverviewScreen()
-              : const AuthScreen(),
+              : FutureBuilder(
+                  future: authData.tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? SplashScreen()
+                          : authResultSnapshot.data == true
+                              ? const ProductsOverviewScreen()
+                              : const AuthScreen(),
+                ),
           routes: {
             AuthScreen.routeName: (ctx) => const AuthScreen(),
             // ProductsOverviewScreen.routeName: (ctx) => const ProductsOverviewScreen(),
