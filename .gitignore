@@ -29,6 +29,7 @@
 .packages
 .pub-cache/
 .pub/
+pubspec.lock
 /build/
 
 # Web related
@@ -45,4 +46,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 android/.gradle/
+android/local.properties
 .env

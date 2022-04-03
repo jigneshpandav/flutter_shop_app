@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/models/http_exceptions.dart';
 import 'package:flutter_shop_app/providers/auth.dart';
+import 'package:flutter_shop_app/screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/constants.dart';
@@ -174,6 +175,9 @@ class _AuthCardState extends State<AuthCard>
         _authMode == AuthMode.Login
             ? constants['sign_in_identifier'] as String
             : constants['signup_identifier'] as String,
+      );
+      Navigator.of(context).pushReplacementNamed(
+        ProductsOverviewScreen.routeName,
       );
     } on HttpException catch (error) {
       if (error.toString().contains('EMAIL_EXISTS')) {

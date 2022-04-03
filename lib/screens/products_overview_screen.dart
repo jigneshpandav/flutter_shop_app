@@ -37,9 +37,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     if (!_isInit) {
       _isLoading = true;
       Provider.of<Products>(context).fetchProducts().then((_) {
-        setState(() {
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
     }
     _isInit = true;
