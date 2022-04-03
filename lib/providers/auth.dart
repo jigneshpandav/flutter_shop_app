@@ -74,7 +74,7 @@ class Auth with ChangeNotifier {
     }
   }
 
-  void logout() {
+  void logout() async {
     _token = null;
     _userId = null;
     _expiryDate = null;
@@ -82,6 +82,8 @@ class Auth with ChangeNotifier {
       _authTimer!.cancel();
       _authTimer = null;
     }
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('userData');
     notifyListeners();
   }
 
