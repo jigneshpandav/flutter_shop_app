@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/providers/auth.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth.dart';
 import '../providers/cart.dart';
 import '../providers/product.dart';
 import '../screens/product_detail_screen.dart';
@@ -26,9 +26,17 @@ class ProductItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         child: GridTile(
           child: GestureDetector(
-            child: Image.network(
-              product.imageUrl,
-              fit: BoxFit.cover,
+            child: Hero(
+              tag: product.id,
+              child: FadeInImage(
+                placeholder: const AssetImage(
+                  "assets/images/product-placeholder.png",
+                ),
+                image: NetworkImage(
+                  product.imageUrl,
+                ),
+                fit: BoxFit.cover,
+              ),
             ),
             onTap: () {
               // Navigator.of(context).push(

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 
 import '../configs/environment.dart';
@@ -25,11 +24,6 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void _setFavoriteValue(value) {
-    isFavorite = value;
-    notifyListeners();
-  }
-
   Future<void> toggleFavoriteStatus(String authToken, String userId) async {
     final oldStatus = isFavorite;
 
@@ -48,5 +42,10 @@ class Product with ChangeNotifier {
       _setFavoriteValue(oldStatus);
       rethrow;
     }
+  }
+
+  void _setFavoriteValue(value) {
+    isFavorite = value;
+    notifyListeners();
   }
 }

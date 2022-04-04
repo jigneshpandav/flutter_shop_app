@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/models/http_exceptions.dart';
-import 'package:flutter_shop_app/providers/auth.dart';
-import 'package:flutter_shop_app/screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/constants.dart';
+import '../models/http_exceptions.dart';
+import '../providers/auth.dart';
+import '../screens/products_overview_screen.dart';
+
+class AuthCard extends StatefulWidget {
+  const AuthCard({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _AuthCardState createState() => _AuthCardState();
+}
 
 enum AuthMode { Signup, Login }
 
@@ -36,7 +45,7 @@ class AuthScreen extends StatelessWidget {
             ),
           ),
           SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
               height: deviceSize.height,
               width: deviceSize.width,
               child: Column(
@@ -89,15 +98,6 @@ class AuthScreen extends StatelessWidget {
   }
 }
 
-class AuthCard extends StatefulWidget {
-  const AuthCard({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  _AuthCardState createState() => _AuthCardState();
-}
-
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -111,23 +111,122 @@ class _AuthCardState extends State<AuthCard>
 
   late AnimationController _animationController;
   late Animation<Size> _heightAnimation;
+  late Animation<double> _opacityAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(
-        microseconds: 200,
+  Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    setState(() {
+      _isLoading = false;
+    });
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
       ),
-    );
-    _heightAnimation = Tween<Size>(
-            begin: Size(double.infinity, 260), end: Size(double.infinity, 320))
-        .animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.fastLinearToSlowEaseIn,
+      elevation: 8.0,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+        //height: _heightAnimation.value.height,
+        height: _authMode == AuthMode.Signup ? 320 : 260,
+        // constraints: BoxConstraints(
+        //   minHeight: _heightAnimation.value.height,
+        // ),
+        constraints: BoxConstraints(
+          minHeight: _authMode == AuthMode.Signup ? 320 : 260,
+        ),
+        width: deviceSize.width * 0.75,
+        padding: const EdgeInsets.all(16.0),
+
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'E-Mail'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value!.isEmpty || !value.contains('@')) {
+                      return 'Invalid email!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['email'] = value!;
+                  },
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value!.isEmpty || value.length < 5) {
+                      return 'Password is too short!';
+                    }
+                  },
+                  onSaved: (value) {
+                    _authData['password'] = value!;
+                  },
+                ),
+                AnimatedContainer(
+                  constraints: BoxConstraints(
+                      minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                      maxHeight: _authMode == AuthMode.Signup ? 120 : 0),
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                        enabled: _authMode == AuthMode.Signup,
+                        decoration: const InputDecoration(
+                            labelText: 'Confirm Password'),
+                        obscureText: true,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
+                              }
+                            : null,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (_isLoading)
+                  const CircularProgressIndicator()
+                else
+                  TextButton(
+                    child: Text(
+                      _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
+                    ),
+                    onPressed: _submit,
+                    style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                TextButton(
+                  child: Text(
+                    '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
+                  ),
+                  onPressed: _switchAuthMode,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -136,6 +235,44 @@ class _AuthCardState extends State<AuthCard>
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 300,
+      ),
+    );
+    _heightAnimation = Tween<Size>(
+      begin: const Size(double.infinity, 260),
+      end: const Size(double.infinity, 320),
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.fastLinearToSlowEaseIn,
+      ),
+    );
+    _opacityAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      ),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1.5),
+      end: const Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.fastLinearToSlowEaseIn,
+      ),
+    );
   }
 
   void _showErrorDialog(String message) {
@@ -210,109 +347,5 @@ class _AuthCardState extends State<AuthCard>
       });
       _animationController.reverse();
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    setState(() {
-      _isLoading = false;
-    });
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 8.0,
-      child: AnimatedBuilder(
-        animation: _heightAnimation,
-        builder: (ctx, staticChild) => AnimatedContainer(
-          height: _heightAnimation
-              .value.height, //_authMode == AuthMode.Signup ? 320 : 260,
-          constraints: BoxConstraints(
-            minHeight: _heightAnimation.value.height,
-          ),
-          width: deviceSize.width * 0.75,
-          padding: const EdgeInsets.all(16.0),
-          duration: Duration(milliseconds: 200),
-          child: staticChild,
-        ),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'E-Mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value!.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _authData['email'] = value!;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value!.isEmpty || value.length < 5) {
-                      return 'Password is too short!';
-                    }
-                  },
-                  onSaved: (value) {
-                    _authData['password'] = value!;
-                  },
-                ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration:
-                        const InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                          }
-                        : null,
-                  ),
-                const SizedBox(
-                  height: 20,
-                ),
-                if (_isLoading)
-                  const CircularProgressIndicator()
-                else
-                  TextButton(
-                    child: Text(
-                      _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
-                    ),
-                    onPressed: _submit,
-                    style: TextButton.styleFrom(
-                      primary: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 8.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      backgroundColor: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                TextButton(
-                  child: Text(
-                    '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
-                  ),
-                  onPressed: _switchAuthMode,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

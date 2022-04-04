@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../providers/cart.dart';
 import '../configs/environment.dart';
+import '../providers/cart.dart';
 
 class OrderItem {
   final String id;
@@ -30,37 +30,6 @@ class Orders with ChangeNotifier {
 
   List<OrderItem> get orders {
     return [..._orders];
-  }
-
-  Future<void> fetchOrders() async {
-    final url = Uri.parse(
-      "${Environment().config.baseUrl}orders/$userId.json?auth=$authToken",
-    );
-    try {
-      final response = await http.get(url);
-      if (response.statusCode >= 400) {
-        throw Exception("Server error");
-      }
-      final data = json.decode(response.body) as Map<String, dynamic>;
-      final List<OrderItem> orders = [];
-      data.forEach((orderId, orderData) {
-        orders.add(OrderItem(
-            id: orderId,
-            amount: orderData['amount'],
-            products: (orderData['products'] as List<dynamic>).map((e) {
-              return CartItem(
-                  id: e['id'],
-                  title: e['title'],
-                  price: e['price'],
-                  quantity: e['quantity']);
-            }).toList(),
-            dateTime: DateTime.parse(orderData['dateTime'])));
-        _orders = orders.reversed.toList();
-        notifyListeners();
-      });
-    } catch (error) {
-      rethrow;
-    }
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
@@ -98,6 +67,37 @@ class Orders with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       throw Exception(error);
+    }
+  }
+
+  Future<void> fetchOrders() async {
+    final url = Uri.parse(
+      "${Environment().config.baseUrl}orders/$userId.json?auth=$authToken",
+    );
+    try {
+      final response = await http.get(url);
+      if (response.statusCode >= 400) {
+        throw Exception("Server error");
+      }
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final List<OrderItem> orders = [];
+      data.forEach((orderId, orderData) {
+        orders.add(OrderItem(
+            id: orderId,
+            amount: orderData['amount'],
+            products: (orderData['products'] as List<dynamic>).map((e) {
+              return CartItem(
+                  id: e['id'],
+                  title: e['title'],
+                  price: e['price'],
+                  quantity: e['quantity']);
+            }).toList(),
+            dateTime: DateTime.parse(orderData['dateTime'])));
+        _orders = orders.reversed.toList();
+        notifyListeners();
+      });
+    } catch (error) {
+      rethrow;
     }
   }
 }

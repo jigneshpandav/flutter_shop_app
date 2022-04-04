@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/providers/product.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/product.dart';
 import '../providers/products.dart';
 
 class ManageProductScreen extends StatefulWidget {
@@ -30,91 +30,6 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
     userId: "",
     isFavorite: false,
   );
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      var arguments = ModalRoute.of(context)!.settings.arguments;
-      if (arguments != null) {
-        _editedProduct = arguments as Product;
-        _editedProduct = Product(
-          id: _editedProduct.id,
-          title: _editedProduct.title,
-          description: _editedProduct.description,
-          price: _editedProduct.price,
-          imageUrl: _editedProduct.imageUrl,
-          userId: _editedProduct.userId,
-          isFavorite: _editedProduct.isFavorite,
-        );
-        _imageUrlController.text = _editedProduct.imageUrl;
-      }
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    _priceFocusNode.dispose();
-    _descriptionFocusNode.dispose();
-    _imageUrlController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _showErrorMessage(BuildContext context) async {
-    setState(() {
-      _isLoading = false;
-    });
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text("Error"),
-          content: const Text("Something went wrong!"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("Ok!"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _saveForm() async {
-    final is_Valid = _form.currentState!.validate();
-    if (!is_Valid) {
-      return;
-    }
-
-    _form.currentState!.save();
-    setState(() {
-      _isLoading = true;
-    });
-
-    if (_editedProduct.id.isEmpty) {
-      try {
-        await Provider.of<Products>(context, listen: false)
-            .addProduct(_editedProduct);
-      } catch (error) {
-        await _showErrorMessage(context);
-      }
-    } else {
-      try {
-        await Provider.of<Products>(context, listen: false)
-            .updateProduct(_editedProduct.id, _editedProduct);
-      } catch (error) {
-        await _showErrorMessage(context);
-      }
-    }
-    setState(() {
-      _isLoading = false;
-    });
-    Navigator.of(context).pop();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,6 +198,91 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                 ),
               ),
             ),
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      var arguments = ModalRoute.of(context)!.settings.arguments;
+      if (arguments != null) {
+        _editedProduct = arguments as Product;
+        _editedProduct = Product(
+          id: _editedProduct.id,
+          title: _editedProduct.title,
+          description: _editedProduct.description,
+          price: _editedProduct.price,
+          imageUrl: _editedProduct.imageUrl,
+          userId: _editedProduct.userId,
+          isFavorite: _editedProduct.isFavorite,
+        );
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _priceFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+    _imageUrlController.dispose();
+    super.dispose();
+  }
+
+  void _saveForm() async {
+    final is_Valid = _form.currentState!.validate();
+    if (!is_Valid) {
+      return;
+    }
+
+    _form.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (_editedProduct.id.isEmpty) {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await _showErrorMessage(context);
+      }
+    } else {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .updateProduct(_editedProduct.id, _editedProduct);
+      } catch (error) {
+        await _showErrorMessage(context);
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _showErrorMessage(BuildContext context) async {
+    setState(() {
+      _isLoading = false;
+    });
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: const Text("Something went wrong!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Ok!"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/configs/environment.dart';
 import 'package:http/http.dart' as http;
 
+import '../configs/environment.dart';
 import 'product.dart';
 
 class Products with ChangeNotifier {
@@ -49,16 +49,43 @@ class Products with ChangeNotifier {
 
   Products(this.authToken, this.userId, this._products);
 
-  List<Product> get products {
-    return [..._products];
-  }
-
   List<Product> get favoriteproducts {
     return products.where((product) => product.isFavorite == true).toList();
   }
 
-  Product findById(String productId) {
-    return _products.firstWhere((product) => product.id == productId);
+  List<Product> get products {
+    return [..._products];
+  }
+
+  Future<void> addProduct(Product product) async {
+    var productIndex =
+        _products.indexWhere((element) => element.id == product.id);
+    if (productIndex <= -1) {
+      try {
+        final url = Uri.parse(
+            '${Environment().config.baseUrl}products.json?auth=$authToken');
+        final response = await http.post(url,
+            body: json.encode({
+              'title': product.title,
+              'description': product.description,
+              'imageUrl': product.imageUrl,
+              'userId': userId,
+              'price': product.price,
+            }));
+
+        _products.add(Product(
+          id: json.decode(response.body)['name'],
+          title: product.title,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          price: product.price,
+          userId: userId!,
+        ));
+        notifyListeners();
+      } catch (error) {
+        rethrow;
+      }
+    }
   }
 
   Future<void> fetchProducts([bool filterByUser = false]) async {
@@ -98,34 +125,24 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(Product product) async {
-    var productIndex =
-        _products.indexWhere((element) => element.id == product.id);
-    if (productIndex <= -1) {
-      try {
-        final url = Uri.parse(
-            '${Environment().config.baseUrl}products.json?auth=$authToken');
-        final response = await http.post(url,
-            body: json.encode({
-              'title': product.title,
-              'description': product.description,
-              'imageUrl': product.imageUrl,
-              'userId': userId,
-              'price': product.price,
-            }));
+  Product findById(String productId) {
+    return _products.firstWhere((product) => product.id == productId);
+  }
 
-        _products.add(Product(
-          id: json.decode(response.body)['name'],
-          title: product.title,
-          description: product.description,
-          imageUrl: product.imageUrl,
-          price: product.price,
-          userId: userId!,
-        ));
-        notifyListeners();
-      } catch (error) {
-        rethrow;
-      }
+  Future<void> removeProduct(String productId) async {
+    final url =
+        Uri.parse('${Environment().config.baseUrl}products/$productId.json');
+    final existingProductIndex =
+        _products.indexWhere((product) => product.id == productId);
+    Product existingProduct = _products[existingProductIndex];
+
+    final response = await http.delete(url);
+    _products.removeAt(existingProductIndex);
+    notifyListeners();
+
+    if (response.statusCode >= 400) {
+      _products.insert(existingProductIndex, existingProduct);
+      notifyListeners();
     }
   }
 
@@ -148,23 +165,6 @@ class Products with ChangeNotifier {
       } catch (error) {
         rethrow;
       }
-    }
-  }
-
-  Future<void> removeProduct(String productId) async {
-    final url =
-        Uri.parse('${Environment().config.baseUrl}products/$productId.json');
-    final existingProductIndex =
-        _products.indexWhere((product) => product.id == productId);
-    Product existingProduct = _products[existingProductIndex];
-
-    final response = await http.delete(url);
-    _products.removeAt(existingProductIndex);
-    notifyListeners();
-
-    if (response.statusCode >= 400) {
-      _products.insert(existingProductIndex, existingProduct);
-      notifyListeners();
     }
   }
 }

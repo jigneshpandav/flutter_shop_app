@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/providers/products.dart';
-import 'package:flutter_shop_app/screens/manage_product_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/product.dart';
+import '../providers/products.dart';
+import '../screens/manage_product_screen.dart';
 
 class UserProductItem extends StatelessWidget {
   final Product product;

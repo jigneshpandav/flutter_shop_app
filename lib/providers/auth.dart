@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import '../configs/environment.dart';
-import '../models/http_exceptions.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../configs/environment.dart';
+import '../models/http_exceptions.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
@@ -26,12 +27,6 @@ class Auth with ChangeNotifier {
 
   String? get userId {
     return _userId;
-  }
-
-  Uri _url(String identifier) {
-    return Uri.parse(
-      '${Environment().config.firebaseAuthBaseUrl}$identifier?key=${Environment().config.firebaseAuthKey}',
-    );
   }
 
   Future<void> authenticate(
@@ -87,14 +82,6 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-  void _autoLogout() {
-    if (_authTimer != null) {
-      _authTimer!.cancel();
-    }
-    final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
-    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
-  }
-
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
@@ -113,5 +100,19 @@ class Auth with ChangeNotifier {
     notifyListeners();
     _autoLogout();
     return true;
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+    }
+    final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
+  }
+
+  Uri _url(String identifier) {
+    return Uri.parse(
+      '${Environment().config.firebaseAuthBaseUrl}$identifier?key=${Environment().config.firebaseAuthKey}',
+    );
   }
 }
